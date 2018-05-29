@@ -34,10 +34,16 @@ int main(int argc, char*argv[])
         std::cout   <<  "-cs , save correct angle" <<  std::endl;
         std::cout   <<  "-r ,get current angle" <<  std::endl; //+
         std::cout   <<  "-I id, update id in range [0-254]" <<std::endl;//+
+        std::cout   <<  "-L for correct loop processing (for example RPi connecter over UART)" <<std::endl;
         std::cout   <<  std::endl;
         std::cout   << "Warning! update id with only one servo connected!"<<std::endl;
         return 0;
 
+    }
+    bool loopbackFix=false;
+    if(cmdOptionExists(argv, argv+argc, "-L"))
+    {
+        loopbackFix = true;
     }
     const char* device = "/dev/ttyUSB0";
     if(cmdOptionExists(argv, argv+argc, "-p"))
@@ -45,7 +51,7 @@ int main(int argc, char*argv[])
         device = getCmdOption(argv, argv + argc, "-p");
     }
 
-    lx16driver driver(device);
+    lx16driver driver(device, loopbackFix);
     if (driver.isOperational()==false)
     {
         std::cout<<"Something wrong with connection, do you have rights? is port correct? is device online?"<<std::endl;
@@ -114,7 +120,7 @@ int main(int argc, char*argv[])
         int angle=atoi(tmpstr);
         std::cout << "setting correction angle " << angle <<std::endl;
         driver.ServoMoveTimeWrite(servoId,angle,100);
-        sleep(2);
+        sleep(1);
       //  return 0;
     }
 
@@ -122,7 +128,7 @@ int main(int argc, char*argv[])
     {
         std::cout << "saving correction angle" <<std::endl;
         driver.ServoAdjustAngleSave(servoId);
-        sleep(2);
+        sleep(1);
         return 0;
     }
 

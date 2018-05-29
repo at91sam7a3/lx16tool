@@ -6,7 +6,7 @@
 class lx16driver
 {
 public:
-    lx16driver(const char*);
+    lx16driver(const char*, bool);
     ~lx16driver();
     bool isOperational();
 
@@ -39,7 +39,7 @@ private:
 
 private:
 
-
+    bool m_loopbackFix;
     serialib handle;
     bool operational;
 };

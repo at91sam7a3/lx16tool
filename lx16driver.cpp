@@ -38,8 +38,9 @@
 #define LOBOT_SERVO_LED_ERROR_WRITE      35
 #define LOBOT_SERVO_LED_ERROR_READ       36
 
-lx16driver::lx16driver(const char* device)
+lx16driver::lx16driver(const char* device, bool loopFix)
     :operational(false)
+    ,m_loopbackFix(loopFix)
 {
     int Ret = handle.Open(device,115200);
     if (Ret!=1) {
@@ -104,15 +105,14 @@ int lx16driver::ServoPostionRead(int id)
     buf[5] = LobotCheckSum(buf);
     handle.Write(buf,6);
     handle.FlushReceiver();
-    handle.ReadString(buf,0,6,100);
-    for(int i=0;i<16;++i) buf[i]=-5;
+    if(m_loopbackFix)//next line fix echo
+        handle.ReadString(buf,0,6,100);
     // Read a string from the serial device
     ret=handle.ReadString(buf,'\n',16,200);                                // Read a maximum of 128 characters with a timeout of 5 seconds
     char crc = LobotCheckSum(buf);                                                                        // The final character of the string must be a line feed ('\n')
     if(buf[3]!=5 || buf[4]!=28)
     {
         std::cerr<<"Comminication error!"<<std::endl;
-	for(int i=0;i<16;++i) std::cerr<<(int)buf[i]<<std::endl;
         return 0;
     }
     if(crc != buf[7])
@@ -138,6 +138,8 @@ int lx16driver::ServoVoltageRead(int id)
 
     handle.Write(buf,6);
     handle.FlushReceiver();
+    if(m_loopbackFix)//next line fix echo
+        handle.ReadString(buf,0,6,100);
     for(int i=0;i<16;++i) buf[i]=-5;
     // Read a string from the serial device
     ret=handle.ReadString(buf,'\n',16,100);                                // Read a maximum of 128 characters with a timeout of 5 seconds
@@ -168,6 +170,8 @@ int lx16driver::ServoAdjustAngleGet(int id)
     buf[5] = LobotCheckSum(buf);
     handle.Write(buf,6);
     handle.FlushReceiver();
+    if(m_loopbackFix)//next line fix echo
+        handle.ReadString(buf,0,6,100);
     for(int i=0;i<16;++i) buf[i]=-5;
     // Read a string from the serial device
     ret=handle.ReadString(buf,'\n',16,100);                                // Read a maximum of 128 characters with a timeout of 5 seconds
