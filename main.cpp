@@ -66,7 +66,7 @@ int main(int argc, char*argv[])
     int servoId=0;
     if(cmdOptionExists(argv, argv+argc, "-id"))
     {
-        char * idNumberStr = getCmdOption(argv, argv + argc, "-I");
+        char * idNumberStr = getCmdOption(argv, argv + argc, "-id");
         if(!idNumberStr)
             return -2;
         servoId=atoi(idNumberStr);
@@ -108,14 +108,14 @@ int main(int argc, char*argv[])
 
     if(cmdOptionExists(argv, argv+argc, "-c"))
     {
-        char * tmpstr = getCmdOption(argv, argv + argc, "-s");
+        char * tmpstr = getCmdOption(argv, argv + argc, "-c");
         if(!tmpstr)
             return -2;
         int angle=atoi(tmpstr);
         std::cout << "setting correction angle " << angle <<std::endl;
         driver.ServoMoveTimeWrite(servoId,angle,100);
         sleep(2);
-        return 0;
+      //  return 0;
     }
 
     if(cmdOptionExists(argv, argv+argc, "-cs"))
