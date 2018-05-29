@@ -170,18 +170,18 @@ int lx16driver::ServoAdjustAngleGet(int id)
     // Read a string from the serial device
     ret=handle.ReadString(buf,'\n',16,100);                                // Read a maximum of 128 characters with a timeout of 5 seconds
     char crc = LobotCheckSum(buf);                                                                        // The final character of the string must be a line feed ('\n')
-    if(buf[3]!=5 || buf[4]!=28)
+    if(buf[3]!=4 || buf[4]!=LOBOT_SERVO_ANGLE_OFFSET_READ)
     {
         std::cerr<<"Comminication error!"<<std::endl;
         return 0;
     }
-    if(crc != buf[7])
+    if(crc != buf[6])
     {
         std::cerr<<"CRC error"<<std::endl;
         return 0;
     }
     // Close the connection with the device
-    ret = (int16_t)BYTE_TO_HW(buf[6], buf[5]);
+    ret = (int8_t)( buf[5]);
     return ret;
 }
 
