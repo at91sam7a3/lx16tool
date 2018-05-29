@@ -1,6 +1,6 @@
 #include "lx16driver.h"
 #include <iostream>
-
+#include <stdint.h>
 #define GET_LOW_BYTE(A) (uint8_t)((A))
 //Macro function  get lower 8 bits of A
 #define GET_HIGH_BYTE(A) (uint8_t)((A) >> 8)
@@ -104,13 +104,15 @@ int lx16driver::ServoPostionRead(int id)
     buf[5] = LobotCheckSum(buf);
     handle.Write(buf,6);
     handle.FlushReceiver();
+    handle.ReadString(buf,0,6,100);
     for(int i=0;i<16;++i) buf[i]=-5;
     // Read a string from the serial device
-    ret=handle.ReadString(buf,'\n',16,100);                                // Read a maximum of 128 characters with a timeout of 5 seconds
+    ret=handle.ReadString(buf,'\n',16,200);                                // Read a maximum of 128 characters with a timeout of 5 seconds
     char crc = LobotCheckSum(buf);                                                                        // The final character of the string must be a line feed ('\n')
     if(buf[3]!=5 || buf[4]!=28)
     {
         std::cerr<<"Comminication error!"<<std::endl;
+	for(int i=0;i<16;++i) std::cerr<<(int)buf[i]<<std::endl;
         return 0;
     }
     if(crc != buf[7])
