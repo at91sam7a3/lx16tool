@@ -33,7 +33,8 @@ int main(int argc, char*argv[])
         std::cout   <<  "-g , correct angle to get,range [-125 +125]" <<  std::endl; //+
         std::cout   <<  "-cs , save correct angle" <<  std::endl;
         std::cout   <<  "-r ,get current angle" <<  std::endl; //+
-        std::cout   <<  "-I id, update id in range [0-254]" <<std::endl;//+
+        std::cout   <<  "-v ,get current voltage" <<  std::endl; //+
+        std::cout   <<  "-I id, rewrite id in range [0-254]" <<std::endl;//+
         std::cout   <<  "-L for correct loop processing (for example RPi connecter over UART)" <<std::endl;
         std::cout   <<  std::endl;
         std::cout   << "Warning! update id with only one servo connected!"<<std::endl;
@@ -103,6 +104,15 @@ int main(int argc, char*argv[])
                  << std::endl;
         return 0;
     }
+
+    if(cmdOptionExists(argv, argv+argc, "-v"))
+    {
+        std::cout<<"Voltage read "
+                 << driver.ServoVoltageRead(servoId)
+                 << std::endl;
+        return 0;
+    }
+
 
     if(cmdOptionExists(argv, argv+argc, "-g"))
     {
