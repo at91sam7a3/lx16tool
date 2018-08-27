@@ -96,7 +96,7 @@ void lx16driver::ServoMoveTimeWrite(int id, int position, int time)
 
 int lx16driver::ServoPostionRead(int id)
 {
-    int ret;
+    uint16_t ret;
     char buf[16];
     buf[0] = buf[1] = LOBOT_SERVO_FRAME_HEADER;
     buf[2] = id;
@@ -105,15 +105,37 @@ int lx16driver::ServoPostionRead(int id)
     buf[5] = LobotCheckSum(buf);
     handle.Write(buf,6);
     handle.FlushReceiver();
-    if(m_loopbackFix)//next line fix echo
+    if(m_loopbackFix)
+    {//next line fix echo
+        std::cout<<std::endl<<"processing loopback fix"<<std::endl;
         handle.ReadString(buf,0,6,100);
-    // Read a string from the serial device
-    ret=handle.ReadString(buf,'\n',16,200);                                // Read a maximum of 128 characters with a timeout of 5 seconds
+
+        // Read a string from the serial device
+        ret=handle.ReadString(buf,'\n',16,100);
+
+        if((buf[0]!=LOBOT_SERVO_FRAME_HEADER) || (buf[1]!=LOBOT_SERVO_FRAME_HEADER)){
+             std::cout<<std::endl<<"found anomaly, trying to avoid"<<std::endl;
+            for(size_t i=1;i<5;++i)
+            {
+                if((buf[i]==LOBOT_SERVO_FRAME_HEADER) && (buf[i+1]==LOBOT_SERVO_FRAME_HEADER))
+                {
+                    memcpy(&buf[0],&buf[i],16-i);
+                    std::cout<<std::endl<<"avoided"<<std::endl;
+                    break;
+                }
+            }
+        }
+    }
+                             // Read a maximum of 128 characters with a timeout of 5 seconds
     char crc = LobotCheckSum(buf);                                                                        // The final character of the string must be a line feed ('\n')
     if(buf[3]!=5 || buf[4]!=28)
     {
         std::cerr<<"Comminication error!"<<std::endl;
-        return 0;
+
+    }
+    for (int i=0;i<16;++i)
+    {
+        std::cout<<"buf["<<i<<"] = "<<std::dec<<(int)buf[i]<<" , "<<std::hex<<(int)buf[i]<<std::endl;
     }
     if(crc != buf[7])
     {
@@ -122,6 +144,7 @@ int lx16driver::ServoPostionRead(int id)
     }
     // Close the connection with the device
     ret = BYTE_TO_HW(buf[6], buf[5]);
+    std::cout<<"ret from "<<ret<<std::endl;
     return ret;
 }
 
