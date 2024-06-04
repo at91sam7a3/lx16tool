@@ -1,0 +1,3 @@
+[submodule "lx16lib"]
+	path = lx16lib
+	url = git@github.com:at91sam7a3/lx16lib.git
