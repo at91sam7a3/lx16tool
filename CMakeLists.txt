@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.9)
 
 project(lx16tool)
 
-add_subdirectory("${CMAKE_SOURCE_DIR}/libs/lx16lib")
+add_subdirectory("${CMAKE_SOURCE_DIR}../lx16lib")
 
 aux_source_directory(. SRC_LIST)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
