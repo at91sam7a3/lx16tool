@@ -87,9 +87,10 @@ int main(int argc, char *argv[])
         int angle;
         std::cin >> angle;
         driver.ServoMoveTimeWrite(servoId, angle, 100);
+        int adjust = driver.ServoAdjustAngleGet(servoId);
         std::cout << std::endl
-                  << "Time to set precise angle, writing 0" << std::endl;
-        int adjust = 0;
+                  << "Time to set precise angle, current "<< angle << std::endl;
+        
         while (adjust != 999)
         {
             driver.ServoAdjustAngleSet(servoId, adjust);
