@@ -1,4 +1,4 @@
-#include "libs/lx16lib/lx16driver.h"
+#include "../lx16lib/lx16driver.h"
 #include <algorithm>
 #include <iostream>
 #include <stdlib.h>
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
         driver.ServoMoveTimeWrite(servoId, angle, 100);
         int adjust = driver.ServoAdjustAngleGet(servoId);
         std::cout << std::endl
-                  << "Time to set precise angle, current "<< angle << std::endl;
+                  << "Time to set precise angle, current "<< adjust << std::endl;
         
         while (adjust != 999)
         {
