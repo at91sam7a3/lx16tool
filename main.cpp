@@ -18,32 +18,6 @@ bool cmdOptionExists(char **begin, char **end, const std::string &option)
     return std::find(begin, end, option) != end;
 }
 
-void checkServos()
-{
-    std::cout<<"Checking connected servos"<<std::endl;
-    for (int i =0 ; i<18; ++i)
-    {
-        std::cout<<"Servo #"<<i<<"...";
-        int voltage=driver.ServoVoltageRead(i);
-        if(voltage == 0)
-        {
-            std::cout<<"Error"<<std::endl;
-            continue;
-        }
-        else
-        {
-            std::cout<<"OK"<<std::endl;
-        }
-        float volt = voltage / 1000;
-        std::cout<<"Voltage = "<<volt<<std::endl;
-        std::cout<<"Adjustments angle = " << driver.ServoAdjustAngleGet(i)<<std::endl;
-        std::pair<int,int> bounds = driver.GetAngleLimits(i);
-        std::cout<<"Limits "<<bounds.first<<" .. "<<bounds.second<<std::endl;
-        std::cout<<"Current angle "<<driver.ServoPositionRead(i)<<std::endl;
-        std::cout<<"Status = "<<(int)driver.GetServoErrorStatus<<std::endl;
-    }
-}
-
 int main(int argc, char *argv[])
 {
     // check for help
@@ -152,7 +126,7 @@ int main(int argc, char *argv[])
             std::cout<<"Limits "<<bounds.first<<" .. "<<bounds.second<<std::endl;
             std::cout<<"Current angle "<<driver.ServoPositionRead(i)<<std::endl;
             std::cout<<"Status = "<<(int)driver.GetServoErrorStatus(i)<<std::endl;
-            return;
+            return 0;
         }
     }
 
