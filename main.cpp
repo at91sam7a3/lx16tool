@@ -126,8 +126,9 @@ int main(int argc, char *argv[])
             std::cout<<"Limits "<<bounds.first<<" .. "<<bounds.second<<std::endl;
             std::cout<<"Current angle "<<driver.ServoPositionRead(i)<<std::endl;
             std::cout<<"Status = "<<(int)driver.GetServoErrorStatus(i)<<std::endl;
-            return 0;
+            
         }
+        return 0;
     }
 
     if (cmdOptionExists(argv, argv + argc, "-tune"))
